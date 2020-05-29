@@ -1,4 +1,6 @@
 # Download pretrained models
+mkdir -p data/pretrained_model
+
 if [ ! -f data/pretrained_model/resnet-101-caffe.pth ]; then
     curl http://www.yuwenxiong.com/pretrained_model/resnet-101-caffe.pth -o data/pretrained_model/resnet-101-caffe.pth
 fi
@@ -7,7 +9,6 @@ if [ ! -f data/pretrained_model/resnet-50-caffe.pth ]; then
 fi
 
 # Install essential python packages
-
 pip install pyyaml pycocotools
 
 # Download panopticapi devkit

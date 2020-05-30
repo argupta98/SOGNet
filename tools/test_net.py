@@ -24,9 +24,9 @@ from sognet.config.parse_args import parse_args
 from sognet.lib.utils.logging import create_logger
 from sognet.lib.utils.timer import Timer
 
-
-args = parse_args()
-logger, final_output_path = create_logger(config.output_path, args.cfg, config.dataset.test_image_set)
+if __name__ == "__main__":
+    args = parse_args()
+    logger, final_output_path = create_logger(config.output_path, args.cfg, config.dataset.test_image_set)
 
 from sognet.dataset import *
 from sognet.models import *
@@ -155,6 +155,7 @@ def sognet_test():
     test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=config.test.batch_size, shuffle=False,
                                               num_workers=0, drop_last=False, pin_memory=False, collate_fn=test_dataset.collate)
 
+    # Arjun: Seems to deal with only looking at the dataset
     if args.eval_only:
         results = pickle.load(open(os.path.join(final_output_path, 'results', 'results_list.pkl'), 'rb'))
         if config.test.vis_mask:
@@ -172,7 +173,7 @@ def sognet_test():
             test_dataset.evaluate_panoptic(test_dataset.get_unified_pan_result(results['all_ssegs'], results['all_panos'], results['all_pano_cls_inds'], stuff_area_limit=config.test.panoptic_stuff_area_limit), os.path.join(final_output_path, 'results', 'pans_unified'))
         sys.exit()
 
-    # preparing
+    # Arjun: Load the model parameters
     curr_iter = config.test.test_iteration
     if args.weight_path == '':
         test_model.load_state_dict(torch.load(os.path.join(os.path.join(os.path.join(config.output_path, os.path.basename(args.cfg).split('.')[0]),
@@ -180,15 +181,15 @@ def sognet_test():
     else:
         test_model.load_state_dict(torch.load(args.weight_path), resume=True)
 
-
+    # Arjun: Set model to eval mode
     for p in test_model.parameters():
         p.requires_grad = False
 
     test_model = DataParallel(test_model, device_ids=gpus, gather_output=False).to(gpus[0])
 
-    # start training
     test_model.eval()
 
+    # Setup for holding data and results
     i_iter = 0
     idx = 0
     test_iter = test_loader.__iter__()

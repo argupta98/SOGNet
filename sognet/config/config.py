@@ -6,7 +6,7 @@ config = edict()
 config.debug_mode = False
 # config.output_path = ''
 # config.model_prefix = ''
-# config.symbol = ''
+config.symbol = 'resnet_50_sognet'
 # config.gpus = ''
 
 config.relation = edict()
@@ -70,8 +70,8 @@ config.dataset = edict()
 # config.dataset.test_image_set = ''
 # config.dataset.root_path = ''
 # config.dataset.dataset_path = ''
-# config.dataset.num_classes = 0
-# config.dataset.num_seg_classes = 0
+config.dataset.num_classes = 81
+config.dataset.num_seg_classes = 81
 
 # training related params
 config.train = edict()

@@ -112,6 +112,7 @@ class coco(BaseDataset):
     def __getitem__(self, index):
         blob = defaultdict(list)
         im_blob, im_scales = self.get_image_blob([self.roidb[index]])
+        # TODO: sketchy, not in config
         if config.network.has_rpn:
             if self.phase != 'test':
                 add_rpn_blobs(blob, im_scales, [self.roidb[index]])
